@@ -26,6 +26,7 @@ conda install conda-forge::openpyxl=3.1.2
 - Existe uma __channel__  em que é possível instalar o ai360 através do *Conda*, mas não testei essa opção e optei por utilizar o *pip* dentro do cógigo
 - Eu utilizo o __vscode__ como editor de código e para rodar os arquivos do tipo ipynb são necessárias extensões dentro do próprio vs code (não sei como isso funciona em outros editores)
 - Assim como mencionado anteriormente, o __aif360__ foi instalado dentro do código, curiosamente só essa biblioteca e algumas dependências já são suficiente para rodar os cógigos, supostamente bibliotecas amplamente utilizadas como __numpy__ e __pandas__ já vem inclusas no aif360. Ou eu estou viajando e instalei essas bibliotecas sem querer no ambiente conda
+- https://git-lfs.com/
 
 
 
