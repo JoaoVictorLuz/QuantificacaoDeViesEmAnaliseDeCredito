@@ -1,3 +1,4 @@
+#github loan contest e creditCardApproval
 import pandas as pd
 pd.set_option('display.max_rows', 500)
 pd.set_option('display.max_columns', 500)
@@ -16,7 +17,7 @@ from aif360.datasets import StandardDataset
 from aif360.metrics import BinaryLabelDatasetMetric, ClassificationMetric
 from aif360.algorithms.postprocessing import EqOddsPostprocessing
 
-def justica_exps(base, attr_set, df, parametros, modelo, categorical_features, label, fvr_classes, prt_attrs, priv_classes, unprivileged_groups, privileged_groups, unprivileged_groups_fe, privileged_groups_fe):
+def justica_exps_education(base, attr_set, df, parametros, modelo, categorical_features, label, fvr_classes, prt_attrs, priv_classes, unprivileged_groups, privileged_groups, unprivileged_groups_fe, privileged_groups_fe, ):
 
   # criando data set no formato adequado (classe Standard Dataset)
   df2model = StandardDataset(df,
@@ -123,7 +124,7 @@ def justica_exps(base, attr_set, df, parametros, modelo, categorical_features, l
     spd_faixa_etaria = metric_pred_faixa_etaria.statistical_parity_difference()
 
     print(f'Atributo sexo: {spd_sexo}')
-    print(f'Atributo faixa_etaria: {spd_faixa_etaria}')
+    print(f'Atributo educacao: {spd_faixa_etaria}')
 
     print('')
 
@@ -132,7 +133,7 @@ def justica_exps(base, attr_set, df, parametros, modelo, categorical_features, l
     di_faixa_etaria = metric_pred_faixa_etaria.disparate_impact()
 
     print(f'Atributo sexo: {di_sexo}')
-    print(f'Atributo faixa_etaria: {di_faixa_etaria}')
+    print(f'Atributo educacao: {di_faixa_etaria}')
 
     print(' ')
 
@@ -141,7 +142,7 @@ def justica_exps(base, attr_set, df, parametros, modelo, categorical_features, l
     aod_faixa_etaria = classified_metric_faixa_etaria.average_odds_difference()
 
     print(f'Atributo sexo: {aod_sexo}')
-    print(f'Atributo faixa_etaria: {aod_faixa_etaria}')
+    print(f'Atributo educacao: {aod_faixa_etaria}')
 
     print(' ')
 
@@ -150,7 +151,7 @@ def justica_exps(base, attr_set, df, parametros, modelo, categorical_features, l
     eod_sexo = classified_metric_sex.equal_opportunity_difference()
     eod_faixa_etaria = classified_metric_faixa_etaria.equal_opportunity_difference()
     print(f'Atributo sexo: {eod_sexo}')
-    print(f'Atributo faixa_etaria: {eod_faixa_etaria}')
+    print(f'Atributo educacao: {eod_faixa_etaria}')
 
     # collecting results
     result_grid['index'] = i
@@ -163,58 +164,16 @@ def justica_exps(base, attr_set, df, parametros, modelo, categorical_features, l
     result_grid['10fold-precisao'] = scores3.mean()
     result_grid['test-score'] = score4
     result_grid['spd_sexo'] = spd_sexo
-    result_grid['spd_faixa_etaria'] = spd_faixa_etaria
+    result_grid['spd_educacao'] = spd_faixa_etaria
     result_grid['di_sexo'] = di_sexo
-    result_grid['di_faixa_etaria'] = di_faixa_etaria
+    result_grid['di_educacao'] = di_faixa_etaria
     result_grid['aod_sexo'] = aod_sexo
-    result_grid['aod_faixa_etaria'] = aod_faixa_etaria
+    result_grid['aod_educacao'] = aod_faixa_etaria
     result_grid['eod_sexo'] = eod_sexo
-    result_grid['eod_faixa_etaria'] = eod_faixa_etaria
+    result_grid['eod_educacao'] = eod_faixa_etaria
 
     results.append(result_grid)
     i += 1
     print(result_grid)
     print("")
   return result_grid
-
-def preparando_experimentos():
-  np.random.seed(2024)
-
-  list_gbt_params = []
-  for estimators in range(100, 500, 1000):
-    for samples in range(50, 300, 500):
-      for learning in [0.1, 0.2, 0.3, 0.4, 0.5]:
-        for depth in range(2, 5, 8):
-          gbt_p = {}
-          RANDOM_STATE = 2024
-          gbt_p['n_estimators'] = estimators
-          gbt_p['min_samples_split'] = samples
-          gbt_p['learning_rate'] = learning
-          gbt_p['max_depth'] = depth
-          gbt_p['random_state'] = RANDOM_STATE
-          list_gbt_params.append(gbt_p)
-
-  # print(*(x for x in list_gbt_params), sep='\n')
-  print("Total de {} conjuntos de parâmetros.".format(len(list_gbt_params)))
-
-  list_rf_params = []
-  for estimators in range(100, 500, 1000):
-    for samples in range(50, 300, 500):
-      for learning in ['gini', 'entropy']:
-        for depth in range(2, 5, 8):
-          rf_p = {}
-          RANDOM_STATE = 2024
-          rf_p['n_estimators'] = estimators
-          rf_p['min_samples_split'] = samples
-          rf_p['criterion'] = learning
-          rf_p['max_depth'] = depth
-          rf_p['random_state'] = RANDOM_STATE
-          list_rf_params.append(rf_p)
-
-  # print(*(x for x in list__params), sep='\n')
-  print("Total de {} conjuntos de parâmetros.".format(len(list_rf_params)))
-
-  return list_gbt_params, list_rf_params
-
-
-
