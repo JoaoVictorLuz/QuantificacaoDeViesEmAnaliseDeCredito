@@ -18,6 +18,7 @@ Depois será necessário apenas executar esses dois comandos para instalar duas 
 ```
 conda install pip
 conda install conda-forge::openpyxl=3.1.2
+conda install -c conda-forge imbalanced-learn 
 ```
 
 
