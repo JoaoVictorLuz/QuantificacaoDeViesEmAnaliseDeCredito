@@ -15,15 +15,25 @@ from sklearn.ensemble import RandomForestClassifier
 from aif360.datasets import StandardDataset
 from aif360.metrics import BinaryLabelDatasetMetric, ClassificationMetric
 from aif360.algorithms.postprocessing import EqOddsPostprocessing
+from imblearn.over_sampling import SMOTE
 
-def justica_exps(base, attr_set, df, parametros, modelo, categorical_features, label, fvr_classes, prt_attrs, priv_classes, unprivileged_groups, privileged_groups, unprivileged_groups_fe, privileged_groups_fe):
+def justica_exps(base, attr_set, df, parametros, modelo, categorical_features, label, fvr_classes, prt_attrs, priv_classes, unprivileged_groups, privileged_groups, unprivileged_groups_fe, privileged_groups_fe, desbalanceamento):
 
+  if desbalanceamento == True:
+    X = df[df.columns.tolist()]
+    y = df["Class"]
+    smote = SMOTE()
+    X_resampled, y_resampled = smote.fit_resample(X, y)
+    df = pd.DataFrame(X_resampled, columns=df.columns.tolist())
+    df['Class'] = y_resampled
+    
   # criando data set no formato adequado (classe Standard Dataset)
   df2model = StandardDataset(df,
                             label_name=label,
                             favorable_classes=fvr_classes,
                             protected_attribute_names=prt_attrs,
                             privileged_classes=priv_classes)
+  
 
   i = 0
   results = []
@@ -51,6 +61,7 @@ def justica_exps(base, attr_set, df, parametros, modelo, categorical_features, l
 
     # Separando teste e treino
     df2_train, df2_test = df2model.split([0.7], shuffle=True)
+   
 
     # Fitando o modelo na base de treino
     model = clf.fit(df2_train.features, df2_train.labels.ravel())

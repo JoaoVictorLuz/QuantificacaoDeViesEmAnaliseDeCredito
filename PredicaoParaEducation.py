@@ -16,9 +16,18 @@ from sklearn.ensemble import RandomForestClassifier
 from aif360.datasets import StandardDataset
 from aif360.metrics import BinaryLabelDatasetMetric, ClassificationMetric
 from aif360.algorithms.postprocessing import EqOddsPostprocessing
+from imblearn.over_sampling import SMOTE
 
-def justica_exps_education(base, attr_set, df, parametros, modelo, categorical_features, label, fvr_classes, prt_attrs, priv_classes, unprivileged_groups, privileged_groups, unprivileged_groups_fe, privileged_groups_fe, ):
+def justica_exps_education(base, attr_set, df, parametros, modelo, categorical_features, label, fvr_classes, prt_attrs, priv_classes, unprivileged_groups, privileged_groups, unprivileged_groups_fe, privileged_groups_fe, desbalanceamento):
 
+  if desbalanceamento == True:
+    X = df[df.columns.tolist()]
+    y = df["Class"]
+    smote = SMOTE()
+    X_resampled, y_resampled = smote.fit_resample(X, y)
+    df = pd.DataFrame(X_resampled, columns=df.columns.tolist())
+    df['Class'] = y_resampled
+    
   # criando data set no formato adequado (classe Standard Dataset)
   df2model = StandardDataset(df,
                             label_name=label,
